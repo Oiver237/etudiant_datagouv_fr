@@ -1,0 +1,64 @@
+DROP DATABASE IF EXISTS datagouv_database;
+CREATE DATABASE datagouv_database;
+DROP WAREHOUSE IF EXISTS datagouv_warehouse;
+CREATE WAREHOUSE datagouv_warehouse;
+CREATE SCHEMA datagouv_schema;
+
+
+--TRUNCATE TABLE  datagouv_database.datagouv_schema.datagouv_table;
+CREATE OR REPLACE TABLE datagouv_database.datagouv_schema.datagouv_table(
+rentree INT,
+categorie_etablissement STRING,
+secteur_etablissement STRING,
+sigle_etablissement STRING,
+libelle_etablissement_1 STRING,
+libelle_etablissement_2 STRING,
+reg_nom STRING,
+aca_nom STRING,
+degetu INT,
+degre_etudes STRING,
+effectifhdccpge INT,
+dont_femmes INT,
+dont_hommes INT,
+latitude FLOAT,
+longitude FLOAT
+);
+
+SELECT * 
+FROM datagouv_database.datagouv_schema.datagouv_table LIMIT 10;
+SELECT COUNT(*) 
+FROM datagouv_database.datagouv_schema.datagouv_table;
+
+DROP SCHEMA IF EXISTS file_format_schema;
+CREATE SCHEMA file_format_schema;
+CREATE OR REPLACE file format datagouv_database.file_format_schema.format_csv
+    type='CSV'
+    field_delimiter=';'
+    RECORD_DELIMITER='\n'
+    skip_header=1
+    --error_on_column_count_mismatch=False
+    ;
+
+//staging schema
+CREATE SCHEMA external_stage_schema;
+//create staging
+CREATE OR REPLACE STAGE datagouv_database.external_stage_schema.datagouv_ext_stage
+    url="s3://olivier-datagouv-education-transform/"
+    credentials=(aws_key_id = 'AKIAZOO6AFJBVDAOYGXV'
+    aws_secret_key='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')
+    FILE_FORMAT= datagouv_database.file_format_schema.format_csv;
+
+list @datagouv_database.external_stage_schema.datagouv_ext_stage;
+
+//schemas for snowpipe
+CREATE OR REPLACE SCHEMA datagouv_database.snowpipe_schema;
+//create a pipe
+CREATE OR REPLACE PIPE datagouv_database.snowpipe_schema.datagouv_snowpipe
+auto_ingest=True
+AS
+COPY INTO datagouv_database.datagouv_schema.datagouv_table
+FROM @datagouv_database.external_stage_schema.datagouv_ext_stage;
+//description of pipeline
+DESC PIPE datagouv_database.snowpipe_schema.datagouv_snowpipe;
+
+
