@@ -44,8 +44,8 @@ CREATE SCHEMA external_stage_schema;
 //create staging
 CREATE OR REPLACE STAGE datagouv_database.external_stage_schema.datagouv_ext_stage
     url="s3://olivier-datagouv-education-transform/"
-    credentials=(aws_key_id = 'AKIAZOO6AFJBVDAOYGXV'
-    aws_secret_key='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')
+    credentials=(aws_key_id = 'XXXXXX'
+    aws_secret_key='XXXXXX')
     FILE_FORMAT= datagouv_database.file_format_schema.format_csv;
 
 list @datagouv_database.external_stage_schema.datagouv_ext_stage;
