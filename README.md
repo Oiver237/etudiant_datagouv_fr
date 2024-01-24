@@ -1,6 +1,6 @@
 # etudiant_datagouv_fr
 
-Ce projet vise à mettre en place un pipeline complet d'ingénierie de données pour l'analyse des effectifs d'étudiants inscrits dans l'enseignement supérieur. Le processus couvre l'extraction des données depuis une source gouvernementale, la transformation, le chargement dans un data warehouse Snowflake, l'orchestration avec Apache Airflow, et la visualisation des résultats.
+Ce projet vise à mettre en place un pipeline complet d'ingénierie de données pour l'analyse des effectifs d'étudiants inscrits dans l'enseignement supérieur en France. Le processus couvre l'extraction des données depuis une source gouvernementale (data.gouv.fr), la transformation, le chargement dans un data warehouse Snowflake, l'orchestration avec Apache Airflow, et la visualisation des résultats.
 
 # Architecture du Projet
 Extraction des Données :
